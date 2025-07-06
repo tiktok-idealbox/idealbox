@@ -1,0 +1,1113 @@
+<!DOCTYPE html>
+
+<html lang="ru">
+
+<head>
+
+	<meta charset="UTF-8" />
+
+	<title>TikTok IdeaBox</title>
+
+	<style>
+		body {
+
+			font-family: Arial, sans-serif;
+
+			background: #f7f7f7;
+
+			display: flex;
+
+			flex-direction: column;
+
+			align-items: center;
+
+			padding: 40px;
+
+		}
+
+		h1 {
+
+			color: #ff0050;
+
+		}
+
+		.box {
+
+			background: #fff;
+
+			border-radius: 12px;
+
+			box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+
+			padding: 20px;
+
+			width: 90%;
+
+			max-width: 550px;
+
+			margin-top: 20px;
+
+			text-align: center;
+
+		}
+
+		.section {
+
+			margin-bottom: 20px;
+
+		}
+
+		button {
+
+			background: #ff0050;
+
+			color: #fff;
+
+			border: none;
+
+			padding: 12px 20px;
+
+			border-radius: 8px;
+
+			font-size: 16px;
+
+			cursor: pointer;
+
+			transition: background 0.3s;
+
+			margin: 6px 6px 0 6px;
+
+			min-width: 120px;
+
+		}
+
+		button:hover {
+
+			background: #e60046;
+
+		}
+
+		.text-block {
+
+			font-size: 16px;
+
+			padding: 10px;
+
+			background: #f0f0f0;
+
+			border-radius: 6px;
+
+			margin-top: 5px;
+
+			opacity: 1;
+
+			transition: opacity 0.5s ease;
+
+		}
+
+		.text-block.fade-out {
+
+			opacity: 0;
+
+		}
+
+		.lang-select {
+
+			margin-bottom: 20px;
+
+			font-size: 16px;
+
+			padding: 8px 12px;
+
+			border-radius: 6px;
+
+			border: 1px solid #ccc;
+
+			cursor: pointer;
+
+		}
+
+		.buttons-row {
+
+			margin-top: 10px;
+
+			display: flex;
+
+			justify-content: center;
+
+			flex-wrap: wrap;
+
+			gap: 10px;
+
+		}
+	</style>
+
+</head>
+
+<body>
+
+
+
+	<h1 id="title">TikTok IdeaBox</h1>
+
+
+
+	<select id="lang" class="lang-select" onchange="changeLanguage()">
+
+		<option value="ru">Русский</option>
+
+		<option value="en">English</option>
+
+	</select>
+
+
+
+	<div class="box">
+
+		<div class="section">
+
+			<strong id="label-idea">🎬 Идея:</strong>
+
+			<div class="text-block" id="idea">Нажми кнопку ниже 👇</div>
+
+		</div>
+
+		<div class="section">
+
+			<strong id="label-caption">✍️ Подпись:</strong>
+
+			<div class="text-block" id="caption">–</div>
+
+		</div>
+
+		<div class="section">
+
+			<strong id="label-script">🧠 Сценарий:</strong>
+
+			<div class="text-block" id="script">–</div>
+
+		</div>
+
+
+
+		<div class="buttons-row">
+
+			<button id="generateBtn" onclick="generateContent()">Получить идею</button>
+
+			<button id="copyBtn" onclick="copyAll()">Скопировать всё</button>
+
+			<button id="shareBtn" onclick="shareContent()">Поделиться</button>
+
+		</div>
+
+	</div>
+
+
+
+	<script>
+
+		let lang = "ru";
+
+
+
+		const texts = {
+
+			ru: {
+
+				title: "TikTok IdeaBox",
+
+				labelIdea: "🎬 Идея:",
+
+				labelCaption: "✍️ Подпись:",
+
+				labelScript: "🧠 Сценарий:",
+
+				buttonGenerate: "Получить идею",
+
+				buttonCopy: "Скопировать всё",
+
+				buttonShare: "Поделиться",
+
+				placeholderIdea: "Нажми кнопку ниже 👇",
+
+				placeholderCaption: "–",
+
+				placeholderScript: "–",
+
+				copiedMessage: "Скопировано в буфер!",
+
+				shareError: "Ваш браузер не поддерживает функцию шаринга."
+
+			},
+
+			en: {
+
+				title: "TikTok IdeaBox",
+
+				labelIdea: "🎬 Idea:",
+
+				labelCaption: "✍️ Caption:",
+
+				labelScript: "🧠 Script:",
+
+				buttonGenerate: "Get Idea",
+
+				buttonCopy: "Copy All",
+
+				buttonShare: "Share",
+
+				placeholderIdea: "Click the button below 👇",
+
+				placeholderCaption: "–",
+
+				placeholderScript: "–",
+
+				copiedMessage: "Copied to clipboard!",
+
+				shareError: "Your browser does not support sharing."
+
+			}
+
+		};
+
+
+
+		const ideas = [
+			{
+				ru: {
+					idea: "Покажи свой день как будто ты в фильме ужасов",
+					caption: "Когда утро начинается как хоррор… ☕💀",
+					script: "Сними, как ты просыпаешься, открываешь холодильник — а там ничего нет. Добавь страшную музыку и медленные переходы."
+				},
+				en: {
+					idea: "Show your day as if it's a horror movie",
+					caption: "When your morning starts like a horror film… ☕💀",
+					script: "Film yourself waking up, opening the fridge — and there's nothing. Add scary music and slow-motion."
+				}
+			},
+			{
+				ru: {
+					idea: "До и после: твоя реакция на плохую и хорошую новость",
+					caption: "Mood switch: 0.1 сек 😂➡️😡",
+					script: "Сделай два клипа — сначала грустно/злое лицо, потом резкий переход на радость. Используй трендовый звук."
+				},
+				en: {
+					idea: "Before and after: your reaction to bad and good news",
+					caption: "Mood switch: 0.1 sec 😂➡️😡",
+					script: "Make two clips — sad/angry face first, then suddenly happy. Use a trending sound."
+				}
+			},
+			{
+				ru: {
+					idea: "Расскажи о себе с помощью только мимики",
+					caption: "Ни слова. Только выражения лица 😏",
+					script: "Поставь камеру и меняй выражения лица под музыку. Без слов, только эмоции."
+				},
+				en: {
+					idea: "Tell about yourself using only facial expressions",
+					caption: "No words. Just expressions 😏",
+					script: "Put the camera in place and change your face expressions with music. No words needed."
+				}
+			},
+			{
+				ru: {
+					idea: "Топ 3 приложений, без которых не можешь жить",
+					caption: "Я без них – никто 📱🔥",
+					script: "Сделай короткий монтаж с иконками приложений, покажи экран и расскажи почему они топ."
+				},
+				en: {
+					idea: "Top 3 apps you can't live without",
+					caption: "I’m nothing without them 📱🔥",
+					script: "Make a quick montage showing app icons, your screen and explain why they’re top for you."
+				}
+			},
+			{
+				ru: {
+					idea: "Реакция на детскую фотографию себя",
+					caption: "Я тогда и я сейчас 😅",
+					script: "Покажи фото в детстве, потом резко переключи на текущее видео с той же позой или выражением лица."
+				},
+				en: {
+					idea: "Reacting to a childhood photo of yourself",
+					caption: "Me then vs me now 😅",
+					script: "Show your childhood photo, then suddenly switch to your current self mimicking the same pose or face."
+				}
+			},
+			{
+				ru: {
+					idea: "Что в моем рюкзаке за 15 секунд",
+					caption: "Pocket edition 🎒⌛",
+					script: "Быстро доставай вещи из рюкзака под ускоренный звук, показывай каждую с забавным комментарием."
+				},
+				en: {
+					idea: "What's in my bag in 15 seconds",
+					caption: "Pocket edition 🎒⌛",
+					script: "Quickly pull out items from your bag with a fast-paced sound, showing each with a funny comment."
+				}
+			},
+			{
+				ru: {
+					idea: "Трансформация: Утро ➡️ Вечеринка",
+					caption: "From 😴 to 💃",
+					script: "Покажи сонное лицо, закрой камеру рукой и открой — ты уже в вечернем образе и танцуешь."
+				},
+				en: {
+					idea: "Transformation: Morning ➡️ Party",
+					caption: "From 😴 to 💃",
+					script: "Show your sleepy face, cover the camera with your hand, then reveal yourself dressed up and dancing."
+				}
+			},
+			{
+				ru: {
+					idea: "Моя реакция на старый мем в 2025 году",
+					caption: "Ностальгия в мемах 😂",
+					script: "Поставь старый мем на экран и сними свою реакцию (улыбка, фейспалм, смех)."
+				},
+				en: {
+					idea: "My reaction to an old meme in 2025",
+					caption: "Meme nostalgia 😂",
+					script: "Play an old meme on screen and film your reaction (smiling, facepalm, laughing)."
+				}
+			},
+			{
+				ru: {
+					idea: "3 факта обо мне, которые никто не знает",
+					caption: "Шок-контент 👀",
+					script: "Расскажи о себе 3 неожиданных факта под трендовый звук или текстовые вставки."
+				},
+				en: {
+					idea: "3 facts about me no one knows",
+					caption: "Shocking facts 👀",
+					script: "Share 3 unexpected facts about yourself with a trending sound or text overlays."
+				}
+			},
+			{
+				ru: {
+					idea: "Твой лучший лайфхак на кухне",
+					caption: "Это спасает мне жизнь 🍳",
+					script: "Покажи свой любимый кулинарный лайфхак за 10 секунд."
+				},
+				en: {
+					idea: "Your best kitchen lifehack",
+					caption: "This saves my life 🍳",
+					script: "Show your favorite cooking hack in under 10 seconds."
+				}
+			},
+
+			// Продолжаем:
+
+			{
+				ru: {
+					idea: "Мой путь: фото каждый месяц за год",
+					caption: "1 год в 10 секундах 📸",
+					script: "Собери фото за каждый месяц в один быстрый слайд-шоу с эмоциональной музыкой."
+				},
+				en: {
+					idea: "My journey: one photo every month for a year",
+					caption: "1 year in 10 seconds 📸",
+					script: "Compile one photo from each month into a quick slideshow with emotional music."
+				}
+			},
+			{
+				ru: {
+					idea: "Что я заказывал в 2025 году (обзор покупок)",
+					caption: "Онлайн-шопоголик 🛒😂",
+					script: "Покажи свои любимые онлайн-покупки и дай краткий отзыв."
+				},
+				en: {
+					idea: "What I ordered in 2025 (shopping haul)",
+					caption: "Online shopaholic 🛒😂",
+					script: "Show your favorite online purchases and give a quick review."
+				}
+			},
+			{
+				ru: {
+					idea: "Моя комната в реальной жизни vs в голове",
+					caption: "Expectation vs reality 🛏️🤣",
+					script: "Сначала нарисуй идеальную комнату, затем покажи реальную версию."
+				},
+				en: {
+					idea: "My room in real life vs in my head",
+					caption: "Expectation vs reality 🛏️🤣",
+					script: "First, draw your perfect room, then show the actual version."
+				}
+			},
+			{
+				ru: {
+					idea: "Как выглядел мой первый TikTok",
+					caption: "Не смейся 😂",
+					script: "Найди и вставь свой первый TikTok, а потом реакцию на него сейчас."
+				},
+				en: {
+					idea: "What my first TikTok looked like",
+					caption: "Don’t laugh 😂",
+					script: "Find and insert your first TikTok, then show your reaction to it now."
+				}
+			},
+			{
+				ru: {
+					idea: "Топ 5 песен, которые застряли в голове",
+					caption: "Не могу выкинуть из головы! 🎵🤪",
+					script: "Включи каждый трек и покажи реакцию или танец под него."
+				},
+				en: {
+					idea: "Top 5 songs stuck in my head",
+					caption: "Can't get these out of my head! 🎵🤪",
+					script: "Play each track and show your reaction or dance to it."
+				}
+			},
+			{
+				ru: {
+					idea: "Как я готовлю свой любимый завтрак",
+					caption: "Простой и вкусный рецепт 🍳🥓",
+					script: "Покажи этапы приготовления с ускорением и финальный результат."
+				},
+				en: {
+					idea: "How I make my favorite breakfast",
+					caption: "Simple and delicious recipe 🍳🥓",
+					script: "Show cooking steps sped up and the final result."
+				}
+			},
+			{
+				ru: {
+					idea: "Мои любимые книги на 2025 год",
+					caption: "Что почитать в этом году 📚✨",
+					script: "Расскажи коротко о каждой книге и почему она тебе понравилась."
+				},
+				en: {
+					idea: "My favorite books for 2025",
+					caption: "What to read this year 📚✨",
+					script: "Briefly talk about each book and why you liked it."
+				}
+			},
+			{
+				ru: {
+					idea: "Реакция на неожиданный подарок",
+					caption: "Когда подарок реально удивил 🎁😲",
+					script: "Сними эмоции, когда открываешь сюрприз."
+				},
+				en: {
+					idea: "Reaction to an unexpected gift",
+					caption: "When the gift really surprised me 🎁😲",
+					script: "Film your emotions while opening the surprise."
+				}
+			},
+			{
+				ru: {
+					idea: "Сделай челлендж: 10 секунд молчания",
+					caption: "Попробуй не говорить 10 секунд 🤐",
+					script: "Запиши себя, пытающегося не говорить 10 секунд с смешными реакциями."
+				},
+				en: {
+					idea: "Try the challenge: 10 seconds of silence",
+					caption: "Try not to talk for 10 seconds 🤐",
+					script: "Record yourself trying not to talk for 10 seconds with funny reactions."
+				}
+			},
+			{
+				ru: {
+					idea: "Покажи свою коллекцию чего-нибудь необычного",
+					caption: "Мои редкие штуки 😍",
+					script: "Покажи и расскажи об интересных предметах из своей коллекции."
+				},
+				en: {
+					idea: "Show your collection of something unusual",
+					caption: "My rare stuff 😍",
+					script: "Show and talk about interesting items from your collection."
+				}
+			},
+			{
+				ru: {
+					idea: "Реакция на смешное видео",
+					caption: "Смех до слёз 😂",
+					script: "Сними, как реагируешь на смешное видео."
+				},
+				en: {
+					idea: "Reaction to a funny video",
+					caption: "Laughing till tears 😂",
+					script: "Record your reaction to a funny video."
+				}
+			},
+			{
+				ru: {
+					idea: "Сравнение: Как я выгляжу утром и вечером",
+					caption: "Два разных человека 😴➡️😎",
+					script: "Покажи разницу между утренним и вечерним видом."
+				},
+				en: {
+					idea: "Comparison: How I look morning vs evening",
+					caption: "Two different people 😴➡️😎",
+					script: "Show the difference between morning and evening look."
+				}
+			},
+			{
+				ru: {
+					idea: "Мой любимый спорт и почему",
+					caption: "Зарядка на каждый день 🏀🔥",
+					script: "Расскажи о спорте, который любишь и почему."
+				},
+				en: {
+					idea: "My favorite sport and why",
+					caption: "Daily energy boost 🏀🔥",
+					script: "Talk about the sport you love and why."
+				}
+			},
+			{
+				ru: {
+					idea: "Топ 3 фильма, которые стоит посмотреть",
+					caption: "Обязательно к просмотру 🎬✨",
+					script: "Расскажи про 3 фильма, которые любишь."
+				},
+				en: {
+					idea: "Top 3 movies to watch",
+					caption: "Must-watch movies 🎬✨",
+					script: "Talk about 3 movies you love."
+				}
+			},
+			{
+				ru: {
+					idea: "Покажи свой стиль одежды",
+					caption: "Мой look на каждый день 👕👖",
+					script: "Сделай мини-показ своих любимых луков."
+				},
+				en: {
+					idea: "Show your clothing style",
+					caption: "My everyday look 👕👖",
+					script: "Make a mini runway of your favorite outfits."
+				}
+			},
+			{
+				ru: {
+					idea: "Покажи, как меняется твое настроение за день",
+					caption: "Утро – день – вечер в эмоциях 🌞➡️🌙",
+					script: "Сними себя утром, днем и вечером с разным настроением."
+				},
+				en: {
+					idea: "Show how your mood changes during the day",
+					caption: "Morning – afternoon – evening moods 🌞➡️🌙",
+					script: "Film yourself morning, afternoon, and evening showing different moods."
+				}
+			},
+			{
+				ru: {
+					idea: "Расскажи смешной случай из жизни",
+					caption: "Вот это было! 😂",
+					script: "Воспроизведи забавную историю с эмоциями и реакциями."
+				},
+				en: {
+					idea: "Tell a funny life story",
+					caption: "That was something! 😂",
+					script: "Reenact a funny story with emotions and reactions."
+				}
+			},
+			{
+				ru: {
+					idea: "Обзор на популярный гаджет",
+					caption: "Стоит ли покупать? 🤔",
+					script: "Покажи гаджет, расскажи плюсы и минусы."
+				},
+				en: {
+					idea: "Review of a popular gadget",
+					caption: "Is it worth buying? 🤔",
+					script: "Show the gadget, explain pros and cons."
+				}
+			},
+			{
+				ru: {
+					idea: "Попробуй новый тренд в танцах",
+					caption: "Тренд 2025 года 🔥",
+					script: "Сними, как учишь новый танец и пробуешь повторить движения."
+				},
+				en: {
+					idea: "Try a new dance trend",
+					caption: "Trend of 2025 🔥",
+					script: "Film yourself learning a new dance and trying the moves."
+				}
+			},
+			{
+				ru: {
+					idea: "Сделай DIY: простой декор своими руками",
+					caption: "Красота своими руками ✂️🎨",
+					script: "Покажи процесс создания декора шаг за шагом."
+				},
+				en: {
+					idea: "DIY: simple decor with your own hands",
+					caption: "Handmade beauty ✂️🎨",
+					script: "Show the step-by-step process of making decor."
+				}
+			},
+			{
+				ru: {
+					idea: "Покажи любимое место в твоём городе",
+					caption: "Где я отдыхаю 🌇",
+					script: "Сними пейзажи и расскажи, почему любишь это место."
+				},
+				en: {
+					idea: "Show your favorite place in your city",
+					caption: "Where I relax 🌇",
+					script: "Film the scenery and explain why you love this place."
+				}
+			},
+			{
+				ru: {
+					idea: "Мой утренний ритуал",
+					caption: "Как я заряжаюсь на день ☀️",
+					script: "Покажи последовательность утренних действий."
+				},
+				en: {
+					idea: "My morning ritual",
+					caption: "How I get energized for the day ☀️",
+					script: "Show the sequence of your morning routine."
+				}
+			},
+			{
+				ru: {
+					idea: "Попробуй необычную еду",
+					caption: "Вкусно или нет? 🤨",
+					script: "Сними, как пробуешь новый вкус и свою реакцию."
+				},
+				en: {
+					idea: "Try unusual food",
+					caption: "Tasty or not? 🤨",
+					script: "Film yourself tasting something new and your reaction."
+				}
+			},
+			{
+				ru: {
+					idea: "Покажи свою коллекцию книг",
+					caption: "Мои книжные сокровища 📚",
+					script: "Покажи полки и расскажи про любимые книги."
+				},
+				en: {
+					idea: "Show your book collection",
+					caption: "My book treasures 📚",
+					script: "Show your shelves and talk about your favorite books."
+				}
+			},
+			{
+				ru: {
+					idea: "Секреты эффективного обучения",
+					caption: "Учусь быстро и с удовольствием 🎓",
+					script: "Поделись своими методами и лайфхаками."
+				},
+				en: {
+					idea: "Secrets of effective studying",
+					caption: "Learning fast and happily 🎓",
+					script: "Share your methods and lifehacks."
+				}
+			},
+			{
+				ru: {
+					idea: "Мой питомец и его смешные привычки",
+					caption: "Любимый комик 😹",
+					script: "Сними забавные моменты с питомцем."
+				},
+				en: {
+					idea: "My pet and its funny habits",
+					caption: "Favorite comedian 😹",
+					script: "Film funny moments with your pet."
+				}
+			},
+			{
+				ru: {
+					idea: "Покажи как делаешь зарядку",
+					caption: "Здоровье прежде всего 💪",
+					script: "Сними короткую тренировку или упражнения."
+				},
+				en: {
+					idea: "Show how you do your workout",
+					caption: "Health comes first 💪",
+					script: "Film a short workout or exercises."
+				}
+			},
+			{
+				ru: {
+					idea: "История моей татуировки",
+					caption: "Почему я её сделал/сделала? 🖋️",
+					script: "Расскажи смысл и историю тату."
+				},
+				en: {
+					idea: "The story behind my tattoo",
+					caption: "Why I got it? 🖋️",
+					script: "Tell the meaning and story of your tattoo."
+				}
+			},
+			{
+				ru: {
+					idea: "Что делать, если скучно дома",
+					caption: "10 идей для прокрастинации 😂",
+					script: "Поделись своими способами развлечься."
+				},
+				en: {
+					idea: "What to do if bored at home",
+					caption: "10 procrastination ideas 😂",
+					script: "Share your ways to have fun."
+				}
+			},
+			{
+				ru: {
+					idea: "Как я изучаю иностранный язык",
+					caption: "Мои лайфхаки для запоминания 📖",
+					script: "Расскажи о своих методах и приложениях."
+				},
+				en: {
+					idea: "How I learn a foreign language",
+					caption: "My memory hacks 📖",
+					script: "Talk about your methods and apps."
+				}
+			},
+			{
+				ru: {
+					idea: "Лучшие места для прогулок в выходные",
+					caption: "Где провести время с пользой 🚶‍♂️",
+					script: "Покажи природу и расскажи о местах."
+				},
+				en: {
+					idea: "Best places for weekend walks",
+					caption: "Where to spend time wisely 🚶‍♂️",
+					script: "Show nature and talk about locations."
+				}
+			},
+			{
+				ru: {
+					idea: "Мой самый странный сон",
+					caption: "Что вообще происходит? 😵",
+					script: "Перескажи сон с юмором и эмоциями."
+				},
+				en: {
+					idea: "My weirdest dream",
+					caption: "What is even happening? 😵",
+					script: "Retell the dream with humor and emotion."
+				}
+			},
+			{
+				ru: {
+					idea: "Как я экономлю деньги",
+					caption: "Полезные советы для бюджета 💰",
+					script: "Поделись своими хитростями."
+				},
+				en: {
+					idea: "How I save money",
+					caption: "Useful tips for your budget 💰",
+					script: "Share your money-saving hacks."
+				}
+			},
+			{
+				ru: {
+					idea: "Покажи любимый музыкальный инструмент",
+					caption: "Моя страсть 🎸",
+					script: "Играй пару нот или аккордов."
+				},
+				en: {
+					idea: "Show your favorite musical instrument",
+					caption: "My passion 🎸",
+					script: "Play a few notes or chords."
+				}
+			},
+			{
+				ru: {
+					idea: "Реакция на свой первый пост в соцсетях",
+					caption: "О Боже, кто это? 😅",
+					script: "Покажи старый пост и свою реакцию сейчас."
+				},
+				en: {
+					idea: "Reaction to my first social media post",
+					caption: "Oh my god, who is that? 😅",
+					script: "Show your old post and your current reaction."
+				}
+			},
+			{
+				ru: {
+					idea: "Обзор на любимый фильм",
+					caption: "Почему его стоит посмотреть 🎥",
+					script: "Расскажи о сюжете и главных героях."
+				},
+				en: {
+					idea: "Review of my favorite movie",
+					caption: "Why it’s worth watching 🎥",
+					script: "Talk about the plot and main characters."
+				}
+			},
+			{
+				ru: {
+					idea: "Покажи смешной момент из жизни",
+					caption: "Улыбнись вместе со мной 😄",
+					script: "Сними забавную ситуацию."
+				},
+				en: {
+					idea: "Show a funny moment from life",
+					caption: "Smile with me 😄",
+					script: "Film a funny situation."
+				}
+			},
+			{
+				ru: {
+					idea: "Как я делаю макияж",
+					caption: "Преображение за 1 минуту 💄",
+					script: "Сними процесс с ускорением."
+				},
+				en: {
+					idea: "How I do my makeup",
+					caption: "Transformation in 1 minute 💄",
+					script: "Film the process sped up."
+				}
+			},
+			{
+				ru: {
+					idea: "Лучшие места для фото",
+					caption: "Где делать классные снимки 📸",
+					script: "Покажи красивые локации."
+				},
+				en: {
+					idea: "Best places for photos",
+					caption: "Where to take cool shots 📸",
+					script: "Show beautiful locations."
+				}
+			},
+			{
+				ru: {
+					idea: "Как я отдыхаю после работы",
+					caption: "Мой способ расслабиться 🛋️",
+					script: "Покажи свои любимые занятия."
+				},
+				en: {
+					idea: "How I relax after work",
+					caption: "My way to unwind 🛋️",
+					script: "Show your favorite activities."
+				}
+			},
+			{
+				ru: {
+					idea: "Что в моём холодильнике?",
+					caption: "Обзор продуктов 🥦🍎",
+					script: "Покажи содержимое и расскажи про свои продукты."
+				},
+				en: {
+					idea: "What’s in my fridge?",
+					caption: "Food haul 🥦🍎",
+					script: "Show contents and talk about your food."
+				}
+			},
+			{
+				ru: {
+					idea: "Покажи, как готовишь любимое блюдо",
+					caption: "Рецепт на быструю руку 🍝",
+					script: "Сними готовку шаг за шагом."
+				},
+				en: {
+					idea: "Show how you cook your favorite dish",
+					caption: "Quick recipe 🍝",
+					script: "Film cooking step by step."
+				}
+			},
+			{
+				ru: {
+					idea: "Танцевальный челлендж с друзьями",
+					caption: "Весело и энергично! 🕺💃",
+					script: "Сними танцы с друзьями под популярный трек."
+				},
+				en: {
+					idea: "Dance challenge with friends",
+					caption: "Fun and energetic! 🕺💃",
+					script: "Film dancing with friends to a popular track."
+				}
+			},
+			{
+				ru: {
+					idea: "Мои любимые цитаты",
+					caption: "Что меня вдохновляет ✨",
+					script: "Покажи цитаты и расскажи, почему они важны."
+				},
+				en: {
+					idea: "My favorite quotes",
+					caption: "What inspires me ✨",
+					script: "Show quotes and explain why they matter."
+				}
+			},
+			{
+				ru: {
+					idea: "Покажи, как собираешься на выход",
+					caption: "Подготовка к вечеринке 🎉",
+					script: "Сними процесс сборов от начала до конца."
+				},
+				en: {
+					idea: "Show how you get ready to go out",
+					caption: "Getting ready for a party 🎉",
+					script: "Film the whole getting-ready process."
+				}
+			},
+			{
+				ru: {
+					idea: "Реакция на неожиданный звонок",
+					caption: "Что за сюрприз? 📞😲",
+					script: "Сними свою реакцию на неожиданное сообщение или звонок."
+				},
+				en: {
+					idea: "Reaction to an unexpected call",
+					caption: "What a surprise? 📞😲",
+					script: "Film your reaction to an unexpected message or call."
+				}
+			}
+		];
+
+
+
+
+
+		function fadeOutIn(element, newText) {
+
+			element.classList.add('fade-out');
+
+			setTimeout(() => {
+
+				element.innerText = newText;
+
+				element.classList.remove('fade-out');
+
+			}, 500);
+
+		}
+
+
+
+		function generateContent() {
+
+			const item = ideas[Math.floor(Math.random() * ideas.length)][lang];
+
+			fadeOutIn(document.getElementById("idea"), item.idea);
+
+			fadeOutIn(document.getElementById("caption"), item.caption);
+
+			fadeOutIn(document.getElementById("script"), item.script);
+
+		}
+
+
+
+		function copyAll() {
+
+			const idea = document.getElementById("idea").innerText;
+
+			const caption = document.getElementById("caption").innerText;
+
+			const script = document.getElementById("script").innerText;
+
+			const t = texts[lang];
+
+
+
+			if (idea === t.placeholderIdea || idea === "") {
+
+				alert(lang === "ru" ? "Сначала сгенерируйте идею." : "Please generate an idea first.");
+
+				return;
+
+			}
+
+
+
+			const textToCopy = `${t.labelIdea} ${idea}\n${t.labelCaption} ${caption}\n${t.labelScript} ${script}`;
+
+
+
+			navigator.clipboard.writeText(textToCopy).then(() => {
+
+				alert(t.copiedMessage);
+
+			}).catch(() => {
+
+				alert(lang === "ru" ? "Ошибка при копировании." : "Copy failed.");
+
+			});
+
+		}
+
+
+
+		function shareContent() {
+
+			const idea = document.getElementById("idea").innerText;
+
+			const caption = document.getElementById("caption").innerText;
+
+			const script = document.getElementById("script").innerText;
+
+			const t = texts[lang];
+
+
+
+			if (idea === t.placeholderIdea || idea === "") {
+
+				alert(lang === "ru" ? "Сначала сгенерируйте идею." : "Please generate an idea first.");
+
+				return;
+
+			}
+
+
+
+			const textToShare = `${t.labelIdea} ${idea}\n${t.labelCaption} ${caption}\n${t.labelScript} ${script}\n\n— TikTok IdeaBox`;
+
+
+
+			if (navigator.share) {
+
+				navigator.share({
+
+					title: 'TikTok IdeaBox',
+
+					text: textToShare
+
+				}).catch(() => {
+
+					alert(t.shareError);
+
+				});
+
+			} else {
+
+				// fallback: просто показать текст для копирования вручную
+
+				prompt(lang === "ru" ? "Скопируйте и поделитесь этим текстом:" : "Copy and share this text:", textToShare);
+
+			}
+
+		}
+
+
+
+		function changeLanguage() {
+
+			lang = document.getElementById("lang").value;
+
+			const t = texts[lang];
+
+			document.getElementById("title").innerText = t.title;
+
+			document.getElementById("label-idea").innerText = t.labelIdea;
+
+			document.getElementById("label-caption").innerText = t.labelCaption;
+
+			document.getElementById("label-script").innerText = t.labelScript;
+
+			document.getElementById("generateBtn").innerText = t.buttonGenerate;
+
+			document.getElementById("copyBtn").innerText = t.buttonCopy;
+
+			document.getElementById("shareBtn").innerText = t.buttonShare;
+
+			document.getElementById("idea").innerText = t.placeholderIdea;
+
+			document.getElementById("caption").innerText = t.placeholderCaption;
+
+			document.getElementById("script").innerText = t.placeholderScript;
+
+		}
+
+	</script>
+
+
+
+</body>
+
+</html>
